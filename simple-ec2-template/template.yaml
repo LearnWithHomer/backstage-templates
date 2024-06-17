@@ -5,7 +5,7 @@ metadata:
   title: Provision an AWS EC2 Instance
   description: Provision AWS EC2 Instance using Terraform
 spec:
-  owner: user:mrdankuta
+  owner: user:ayoolamakinde3
   type: service
 
   parameters:
@@ -63,7 +63,7 @@ spec:
       name: Fetch Base
       action: fetch:template
       input:
-        url: https://github.com/Makinates/smpls-ec2-tmplt
+        url: https://github.com/LearnWithHome/backstage-templates/simple-ec2-template
         copyWithoutTemplating:
           - .github/**/*.yaml
           - infrastructure/*.tf
@@ -79,14 +79,14 @@ spec:
         repoVisibility: public
         defaultBranch: 'main'
         description: This is ${{ parameters.name }}
-        repoUrl: 'github.com?repo=${{ parameters.name }}&owner=Makinates'
+        repoUrl: 'github.com?repo=${{ parameters.name }}&owner=LearnWithHomer'
     # Start a GitHub Action to build an EC2 instance with Terraform
     - id: github-action
       name: Trigger GitHub Action
       action: github:actions:dispatch
       input:
         workflowId: manage-ec2.yaml
-        repoUrl: 'github.com?repo=${{ parameters.name }}&owner=Makinates'
+        repoUrl: 'github.com?repo=${{ parameters.name }}&owner=LearnWithHomer'
         branchOrTagName: 'main'
         workflowInputs:
           instanceName: ${{ parameters.instanceName }}
