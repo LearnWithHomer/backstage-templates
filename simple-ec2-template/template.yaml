@@ -1,0 +1,111 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: ec2-instance
+  title: Provision an AWS EC2 Instance
+  description: Provision AWS EC2 Instance using Terraform
+spec:
+  owner: user:mrdankuta
+  type: service
+
+  parameters:
+    - title: Project Details
+      required:
+        - name
+        - description
+      properties:
+        name:
+          title: Project Name
+          type: string
+          description: Unique name. No spaces. No symbols.
+          maxLength: 50
+          ui:autofocus: true
+          pattern: '^[a-zA-Z0-9_-]+$'
+        description:
+          title: Project Description
+          type: string
+          description: A short description
+    - title: EC2 Configuration
+      required:
+        - instanceName
+        - instanceType
+        - region
+        - action
+      properties:
+        instanceName:
+          title: Instance Name
+          type: string
+          description: The name of your EC2 instance
+          ui:autofocus: true
+        instanceType:
+          title: EC2 Instance Type
+          type: string
+          enum:
+            - 't2-micro'
+            - 't2-small'
+        region:
+          title: AWS Region
+          type: string
+          description: The AWS region where the instance will be deployed
+          enum:
+            - us-east-1
+            - us-west-2
+        action:
+          title: Action
+          type: string
+          description: Action to perform (apply/destroy)
+          enum:
+            - apply
+            - destroy
+
+  steps:
+    - id: fetch-base
+      name: Fetch Base
+      action: fetch:template
+      input:
+        url: https://github.com/Makinates/smpls-ec2-tmplt
+        copyWithoutTemplating:
+          - .github/**/*.yaml
+          - infrastructure/*.tf
+          - src/*.*
+        values:
+          name: ${{ parameters.name }}
+    # This step publishes the contents of the working directory to GitHub.
+    - id: publish
+      name: Publish
+      action: publish:github
+      input:
+        allowedHosts: ['github.com']
+        repoVisibility: public
+        defaultBranch: 'main'
+        description: This is ${{ parameters.name }}
+        repoUrl: 'github.com?repo=${{ parameters.name }}&owner=Makinates'
+    # Start a GitHub Action to build an EC2 instance with Terraform
+    - id: github-action
+      name: Trigger GitHub Action
+      action: github:actions:dispatch
+      input:
+        workflowId: manage-ec2.yaml
+        repoUrl: 'github.com?repo=${{ parameters.name }}&owner=Makinates'
+        branchOrTagName: 'main'
+        workflowInputs:
+          instanceName: ${{ parameters.instanceName }}
+          instanceType: ${{ parameters.instanceType }}
+          awsRegion: ${{ parameters.region }}
+          action: ${{ parameters.action }}
+    # The final step is to register our new component in the catalog.
+    - id: register
+      name: Register
+      action: catalog:register
+      input:
+        repoContentsUrl: ${{ steps['publish'].output.repoContentsUrl }}
+        catalogInfoPath: '/catalog-info.yaml'
+
+  # Outputs are displayed to the user after a successful execution of the template.
+  output:
+    links:
+      - title: Repository
+        url: ${{ steps['publish'].output.remoteUrl }}
+      - title: Open in catalog
+        icon: catalog
+        entityRef: ${{ steps['register'].output.entityRef }}
