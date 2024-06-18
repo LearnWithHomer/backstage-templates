@@ -63,7 +63,7 @@ spec:
       name: Fetch Base
       action: fetch:template
       input:
-        url: https://github.com/LearnWithHomer/backstage-templates/simple-ec2-template
+        url: https://github.com/LearnWithHomer/backstage-templates/tree/main/simple-ec2-template
         copyWithoutTemplating:
           - .github/**/*.yaml
           - infrastructure/*.tf
