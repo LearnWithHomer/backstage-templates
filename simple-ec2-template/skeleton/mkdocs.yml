@@ -1,5 +1,5 @@
-site_name: BeginLearning
-site_description: Testing this out
+site_name: ${{values.name}}
+# site_description: ${{values.description}}
 
 nav:
   - Introduction: index.md

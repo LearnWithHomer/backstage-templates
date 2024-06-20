@@ -5,7 +5,7 @@ metadata:
   title: Provision an AWS EC2 Instance
   description: Provision AWS EC2 Instance using Terraform
 spec:
-  owner: group:devops
+  owner: user:mrdankuta
   type: service
 
   parameters:
@@ -20,11 +20,22 @@ spec:
           description: Unique name. No spaces. No symbols.
           maxLength: 50
           ui:autofocus: true
-          pattern: '^[a-zA-Z0-9_-]+$'
+          pattern: "^[a-zA-Z0-9_-]+$"
         description:
           title: Project Description
           type: string
           description: A short description
+    - title: Choose a Repo location
+      required:
+        - repoUrl
+      properties:
+        repoUrl:
+          title: Repository Location
+          type: string
+          ui:field: RepoUrlPicker
+          ui:options:
+            allowedHosts:
+              - github.com
     - title: EC2 Configuration
       required:
         - instanceName
@@ -41,8 +52,8 @@ spec:
           title: EC2 Instance Type
           type: string
           enum:
-            - 't2-micro'
-            - 't2-small'
+            - "t2-micro"
+            - "t2-small"
         region:
           title: AWS Region
           type: string
@@ -63,11 +74,7 @@ spec:
       name: Fetch Base
       action: fetch:template
       input:
-        url: https://github.com/LearnWithHomer/backstage-templates/tree/main/simple-ec2-template
-        copyWithoutTemplating:
-          - .github/**/*.yaml
-          - infrastructure/*.tf
-          - src/*.*
+        url: ./skeleton
         values:
           name: ${{ parameters.name }}
     # This step publishes the contents of the working directory to GitHub.
@@ -75,19 +82,18 @@ spec:
       name: Publish
       action: publish:github
       input:
-        allowedHosts: ['github.com']
-        repoVisibility: public
-        defaultBranch: 'main'
+        allowedHosts: ["github.com"]
         description: This is ${{ parameters.name }}
-        repoUrl: 'github.com?repo=${{ parameters.name }}&owner=LearnWithHomer'
+        repoUrl: ${{ parameters.repoUrl }}
+        # sourcePath:
     # Start a GitHub Action to build an EC2 instance with Terraform
     - id: github-action
       name: Trigger GitHub Action
       action: github:actions:dispatch
       input:
-        workflowId: manage-ec2.yaml
-        repoUrl: 'github.com?repo=${{ parameters.name }}&owner=LearnWithHomer'
-        branchOrTagName: 'main'
+        workflowId: manage-ec2.yml
+        repoUrl: "github.com?repo=backstage-templates&owner=LearnWithHomer"
+        branchOrTagName: "main"
         workflowInputs:
           instanceName: ${{ parameters.instanceName }}
           instanceType: ${{ parameters.instanceType }}
@@ -98,8 +104,8 @@ spec:
       name: Register
       action: catalog:register
       input:
-        repoContentsUrl: ${{ steps['publish'].output.repoContentsUrl }}
-        catalogInfoPath: '/catalog-info.yaml'
+        repoContentsUrl: "${{ steps.publish.output.repoContentsUrl }}"
+        catalogInfoPath: "/catalog-info.yaml"
 
   # Outputs are displayed to the user after a successful execution of the template.
   output:

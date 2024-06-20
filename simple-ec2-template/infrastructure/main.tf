@@ -1,6 +1,6 @@
 # main.tf
 provider "aws" {
-  region = "us-east-1"
+  region = var.awsRegion
 }
 
 resource "aws_instance" "example" {

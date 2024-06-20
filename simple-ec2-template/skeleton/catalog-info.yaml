@@ -4,10 +4,10 @@ metadata:
   name: ${{ values.name | dump }}
   annotations:
     github.com/project-slug: LearnWithHomer/${{ values.name }}
-    github.com/actions-workflow: manage-ec2.yaml
+    # github.com/actions-workflow: manage-ec2.yml
     backstage.io/techdocs-ref: dir:.
   description: ${{ values.name }} running on AWS EC2 instance managed by Terraform
 spec:
   type: service
-  owner: user:ayoolamakinde3
+  owner: group:devops
   lifecycle: experimental
