@@ -16,6 +16,9 @@ on:
         description: 'Action to perform (apply/destroy)'
         required: true
 
+env:
+  TFPATH: 'simple-ec2-template/infrastructure'
+
 jobs:
   apply_instance:
     runs-on: ubuntu-latest
@@ -37,19 +40,19 @@ jobs:
 
     - name: Terraform Init
       run: terraform init
-      working-directory: infrastructure
+      working-directory: ${{env.TFPATH}}
 
     - name: Terraform Format
       run: terraform fmt
-      working-directory: infrastructure
+      working-directory: ${{env.TFPATH}}
 
     - name: Terraform Validate
       run: terraform validate
-      working-directory: infrastructure
+      working-directory: ${{env.TFPATH}}
 
     - name: Terraform Apply
       run: terraform apply -var instanceName=${{ github.event.inputs.instanceName }} -var instanceType=${{ github.event.inputs.instanceType }} -var awsRegion=${{ github.event.inputs.awsRegion }} -auto-approve
-      working-directory: infrastructure
+      working-directory: ${{env.TFPATH}}
 
   destroy_instance:
     runs-on: ubuntu-latest
@@ -71,16 +74,16 @@ jobs:
 
     - name: Terraform Init
       run: terraform init
-      working-directory: infrastructure
+      working-directory: ${{env.TFPATH}}
 
     - name: Terraform FMT
       run: terraform fmt
-      working-directory: infrastructure
+      working-directory: ${{env.TFPATH}}
 
     - name: Terraform Validate
       run: terraform validate
-      working-directory: infrastructure
+      working-directory: ${{env.TFPATH}}
       
     - name: Terraform Destroy
       run: terraform destroy -var instanceName=${{ github.event.inputs.instanceName }} -var instanceType=${{ github.event.inputs.instanceType }} -var awsRegion=${{ github.event.inputs.awsRegion }} -auto-approve
-      working-directory: infrastructure
+      working-directory: ${{env.TFPATH}}
