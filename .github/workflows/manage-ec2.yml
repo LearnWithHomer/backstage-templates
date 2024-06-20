@@ -3,15 +3,6 @@ name: Manage EC2 Instance
 on:
   workflow_dispatch:
     inputs:
-      instanceName:
-        description: 'Name of the EC2 Instance'
-        required: true
-      instanceType:
-        description: 'Type of the EC2 Instance'
-        required: true
-      awsRegion:
-        description: 'AWS Region for the instance'
-        required: true
       action:
         description: 'Action to perform (apply/destroy)'
         required: true
@@ -26,14 +17,6 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
-
-    - name: Setup AWS Auth Details
-      uses: aws-actions/configure-aws-credentials@v1
-      with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
-        aws-region: ${{github.event.inputs.awsRegion}}
 
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v1
@@ -51,7 +34,7 @@ jobs:
       working-directory: ${{env.TFPATH}}
 
     - name: Terraform Apply
-      run: terraform apply -var instanceName=${{ github.event.inputs.instanceName }} -var instanceType=${{ github.event.inputs.instanceType }} -var awsRegion=${{ github.event.inputs.awsRegion }} -auto-approve
+      run: terraform apply -auto-approve
       working-directory: ${{env.TFPATH}}
 
   destroy_instance:
@@ -60,14 +43,6 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
-
-    - name: Setup AWS Auth Details
-      uses: aws-actions/configure-aws-credentials@v1
-      with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
-        aws-region: ${{github.event.inputs.awsRegion}}
 
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v1
@@ -85,5 +60,5 @@ jobs:
       working-directory: ${{env.TFPATH}}
       
     - name: Terraform Destroy
-      run: terraform destroy -var instanceName=${{ github.event.inputs.instanceName }} -var instanceType=${{ github.event.inputs.instanceType }} -var awsRegion=${{ github.event.inputs.awsRegion }} -auto-approve
+      run: terraform destroy -auto-approve
       working-directory: ${{env.TFPATH}}
