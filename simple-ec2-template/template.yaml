@@ -4,6 +4,8 @@ metadata:
   name: ec2-instance
   title: Provision a Resource with IaC & CI/CD
   description: Provision a simple resource with Github Actions and Terraform
+  annotations:
+    backstage.io/techdocs-ref: dir:.
 spec:
   owner: group:devops
   type: service
