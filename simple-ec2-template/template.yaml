@@ -2,8 +2,8 @@ apiVersion: scaffolder.backstage.io/v1beta3
 kind: Template
 metadata:
   name: ec2-instance
-  title: Provision an AWS EC2 Instance
-  description: Provision AWS EC2 Instance using Terraform
+  title: Provision a Resource with IaC & CI/CD
+  description: Provision a simple resource with Github Actions and Terraform
 spec:
   owner: group:devops
   type: service
