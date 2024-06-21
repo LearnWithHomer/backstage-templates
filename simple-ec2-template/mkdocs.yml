@@ -2,8 +2,7 @@ site_name: Backstage Templates
 # site_description: ${{values.description}}
 
 nav:
-  - Introduction: index.md
-  - Template Usage: 03-Using-a-Backstage-Template.md
+  - Template Usage: index.md
   - Template Setup: 02-Setting-up-a-Backstage-Template.md
 
 plugins:
