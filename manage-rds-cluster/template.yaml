@@ -1,0 +1,78 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: manage-rds-cluster
+  title: Start/Stop RDS Clusters
+  description: Start and Stop RDS Clusters with Github Actions
+  annotations:
+    backstage.io/techdocs-ref: dir:.
+spec:
+  owner: group:devops
+  type: service
+
+  parameters:
+    - title: Cluster Details
+      required:
+        - identifier
+      properties:
+        name:
+          title: Project Name
+          type: string
+          description: Unique name. No spaces. No symbols.
+          maxLength: 50
+          ui:autofocus: true
+    - title: Action
+      required:
+        - action
+      properties:
+        action:
+          title: Action
+          type: string
+          description: Action to perform (start/stop)
+          enum:
+            - start
+            - stop
+
+  steps:
+    # - id: fetch-base
+    #   name: Fetch Base
+    #   action: fetch:template
+    #   input:
+    #     url: ./skeleton
+    #     values:
+    #       name: ${{ parameters.name }}
+    # # This step publishes the contents of the working directory to GitHub.
+    # - id: publish
+    #   name: Publish
+    #   action: publish:github
+    #   input:
+    #     allowedHosts: ["github.com"]
+    #     description: This is ${{ parameters.name }}
+    #     repoUrl: ${{ parameters.repoUrl }}
+        # sourcePath:
+    # Start a GitHub Action to build an EC2 instance with Terraform
+    - id: github-action
+      name: Trigger GitHub Action
+      action: github:actions:dispatch
+      input:
+        workflowId: startStopRds2.yml
+        repoUrl: "github.com?repo=github-actions-and-crons&owner=LearnWithHomer"
+        branchOrTagName: "master"
+        workflowInputs:
+          action: ${{ parameters.action }}
+    # The final step is to register our new component in the catalog.
+    # - id: register
+    #   name: Register
+    #   action: catalog:register
+    #   input:
+    #     repoContentsUrl: "${{ steps.publish.output.repoContentsUrl }}"
+    #     catalogInfoPath: "/catalog-info.yaml"
+
+  # Outputs are displayed to the user after a successful execution of the template.
+  # output:
+  #   links:
+  #     - title: Repository
+  #       url: ${{ steps['publish'].output.remoteUrl }}
+  #     - title: Open in catalog
+  #       icon: catalog
+  #       entityRef: ${{ steps['register'].output.entityRef }}
