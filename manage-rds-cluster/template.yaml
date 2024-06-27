@@ -52,7 +52,7 @@ spec:
       name: Trigger GitHub Action
       action: github:actions:dispatch
       input:
-        workflowId: startStopRds2.yml
+        workflowId: infrastructure-account-scheduled-scaling.yml
         repoUrl: "github.com?repo=github-actions-and-crons&owner=LearnWithHomer"
         branchOrTagName: "master"
         workflowInputs:
