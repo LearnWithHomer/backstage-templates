@@ -2,8 +2,8 @@ apiVersion: scaffolder.backstage.io/v1beta3
 kind: Template
 metadata:
   name: manage-rds-cluster
-  title: Start/Stop RDS Clusters
-  description: Start and Stop RDS Clusters with Github Actions
+  title: Start/Stop Infrastructure Account RDS Clusters
+  description: Start and Stop AWS Infrastructure Account RDS Clusters with Github Actions
   annotations:
     backstage.io/techdocs-ref: dir:.
 spec:
