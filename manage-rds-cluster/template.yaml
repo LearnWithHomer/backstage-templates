@@ -14,17 +14,15 @@ spec:
     - title: Cluster Details
       required:
         - identifier
-      properties:
-        name:
-          title: Project Name
-          type: string
-          description: Unique name. No spaces. No symbols.
-          maxLength: 50
-          ui:autofocus: true
-    - title: Action
-      required:
         - action
       properties:
+        identifier:
+          title: Cluster Identifier
+          type: string
+          description: Select the AWS RDS Cluster Identifier
+          enum:
+            - testdb
+            - testdb2
         action:
           title: Action
           type: string
@@ -59,6 +57,7 @@ spec:
         repoUrl: "github.com?repo=github-actions-and-crons&owner=LearnWithHomer"
         branchOrTagName: "master"
         workflowInputs:
+          identifier: ${{ parameters.identifier }}
           action: ${{ parameters.action }}
     # The final step is to register our new component in the catalog.
     # - id: register
