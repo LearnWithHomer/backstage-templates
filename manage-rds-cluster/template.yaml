@@ -21,7 +21,7 @@ spec:
           type: string
           description: Select the AWS RDS Cluster Identifier
           enum:
-            - testcluster
+            - testdb
         action:
           title: Action
           type: string
