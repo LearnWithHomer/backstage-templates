@@ -13,10 +13,10 @@ spec:
   parameters:
     - title: Cluster Details
       required:
-        - identifier
+        - cluster
         - action
       properties:
-        identifier:
+        cluster:
           title: Cluster Identifier
           type: string
           description: Select the AWS RDS Cluster Identifier
