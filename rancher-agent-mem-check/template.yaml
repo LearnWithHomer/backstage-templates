@@ -47,7 +47,7 @@ spec:
         repoUrl: "github.com?repo=github-actions-and-crons&owner=LearnWithHomer"
         branchOrTagName: "master"
         workflowInputs:
-          threshold: ${{ parameters.threshold }}
+          memory_threshold_mi: ${{ parameters.threshold }}
     # The final step is to register our new component in the catalog.
     # - id: register
     #   name: Register
