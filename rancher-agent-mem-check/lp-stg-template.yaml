@@ -1,0 +1,33 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: lp-stg-rancher-agent-mem-check
+  title: Trigger LP Staging Rancher Agent Memory Check
+  description: Trigger LP Rancher Agent Memory Check and Restarts the Pods if Necessary
+  annotations:
+    backstage.io/techdocs-ref: dir:.
+spec:
+  owner: group:devops
+  type: service
+
+  parameters:
+    - title: Trigger Details
+      required:
+        - threshold
+      properties:
+        threshold:
+          title: Memory Threshold
+          type: string
+          description: Memory throshold in Mi. Default is 1000Mi
+          default: '1000'
+
+  steps:
+    - id: github-action
+      name: Trigger GitHub Action
+      action: github:actions:dispatch
+      input:
+        workflowId: littlepassports-staging-rancher-agent-memory-check.yml
+        repoUrl: "github.com?repo=github-actions-and-crons&owner=LearnWithHomer"
+        branchOrTagName: "master"
+        workflowInputs:
+          memory_threshold_mi: '${{ parameters.threshold }}'
