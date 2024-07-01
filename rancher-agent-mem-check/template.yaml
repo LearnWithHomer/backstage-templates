@@ -2,7 +2,7 @@ apiVersion: scaffolder.backstage.io/v1beta3
 kind: Template
 metadata:
   name: lp-rancher-agent-mem-check
-  title: Trigger LP Rancher Agent Memory Check 
+  title: Trigger LP Rancher Agent Memory Check 2
   description: Trigger LP Rancher Agent Memory Check and Restarts the Pods if Necessary
   annotations:
     backstage.io/techdocs-ref: dir:.
