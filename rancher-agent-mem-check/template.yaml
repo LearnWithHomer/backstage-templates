@@ -1,0 +1,66 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: lp-rancher-agent-mem-check
+  title: Trigger LP Rancher Agent Memory Check 
+  description: Trigger LP Rancher Agent Memory Check and Restarts the Pods if Necessary
+  annotations:
+    backstage.io/techdocs-ref: dir:.
+spec:
+  owner: group:devops
+  type: service
+
+  parameters:
+    - title: Trigger Details
+      required:
+        - threshold
+      properties:
+        threshold:
+          title: Memory Threshold
+          type: number
+          description: Memory throshold in Mi. Default is 1500Mi
+          default: 1500
+
+  steps:
+    # - id: fetch-base
+    #   name: Fetch Base
+    #   action: fetch:template
+    #   input:
+    #     url: ./skeleton
+    #     values:
+    #       name: ${{ parameters.name }}
+    # # This step publishes the contents of the working directory to GitHub.
+    # - id: publish
+    #   name: Publish
+    #   action: publish:github
+    #   input:
+    #     allowedHosts: ["github.com"]
+    #     description: This is ${{ parameters.name }}
+    #     repoUrl: ${{ parameters.repoUrl }}
+        # sourcePath:
+    # Start a GitHub Action to build an EC2 instance with Terraform
+    - id: github-action
+      name: Trigger GitHub Action
+      action: github:actions:dispatch
+      input:
+        workflowId: littlepassports-staging-rancher-agent-memory-check.yml
+        repoUrl: "github.com?repo=github-actions-and-crons&owner=LearnWithHomer"
+        branchOrTagName: "master"
+        workflowInputs:
+          threshold: ${{ parameters.threshold }}
+    # The final step is to register our new component in the catalog.
+    # - id: register
+    #   name: Register
+    #   action: catalog:register
+    #   input:
+    #     repoContentsUrl: "${{ steps.publish.output.repoContentsUrl }}"
+    #     catalogInfoPath: "/catalog-info.yaml"
+
+  # Outputs are displayed to the user after a successful execution of the template.
+  # output:
+  #   links:
+  #     - title: Repository
+  #       url: ${{ steps['publish'].output.remoteUrl }}
+  #     - title: Open in catalog
+  #       icon: catalog
+  #       entityRef: ${{ steps['register'].output.entityRef }}
