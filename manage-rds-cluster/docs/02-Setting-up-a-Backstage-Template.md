@@ -112,7 +112,7 @@ env:
   TFPATH: 'simple-ec2-template/infrastructure'
 jobs:
   apply_instance:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     if: ${{ github.event.inputs.action == 'apply' }}
     steps:
     - name: Checkout code
@@ -132,7 +132,7 @@ jobs:
       run: terraform apply -auto-approve
       working-directory: ${{env.TFPATH}}
   destroy_instance:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     if: ${{ github.event.inputs.action == 'destroy' }}
     steps:
     - name: Checkout code

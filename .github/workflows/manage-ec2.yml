@@ -12,7 +12,7 @@ env:
 
 jobs:
   apply_instance:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     if: ${{ github.event.inputs.action == 'apply' }}
     steps:
     - name: Checkout code
@@ -38,7 +38,7 @@ jobs:
       working-directory: ${{env.TFPATH}}
 
   destroy_instance:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     if: ${{ github.event.inputs.action == 'destroy' }}
     steps:
     - name: Checkout code

@@ -1,0 +1,46 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: begin-rds-cluster
+  title: Start/Stop Begin Site Account RDS Clusters
+  description: Start and Stop AWS Begin Site Account RDS Clusters with Github Actions
+  annotations:
+    backstage.io/techdocs-ref: dir:.
+spec:
+  owner: group:devops
+  type: service
+
+  parameters:
+    - title: Cluster Details
+      required:
+        - cluster
+        - action
+      properties:
+        cluster:
+          title: Cluster Identifier
+          type: string
+          description: Select the AWS RDS Cluster Identifier
+          enum:
+            - wordpress-dev
+            - wordpress-dev-new
+            - wordpress-dev-restore-10-16-2023-cluster
+        action:
+          title: Action
+          type: string
+          description: Action to perform (start/stop)
+          enum:
+            - start
+            - stop
+
+  steps:
+    # Start a GitHub Action to build an EC2 instance with Terraform
+    - id: github-action
+      name: Trigger GitHub Action
+      action: github:actions:dispatch
+      input:
+        workflowId: begin-site-account-scheduled-scaling.yml
+        repoUrl: "github.com?repo=github-actions-and-crons&owner=LearnWithHomer"
+        branchOrTagName: "master"
+        workflowInputs:
+          cluster: ${{ parameters.cluster }}
+          action: ${{ parameters.action }}
