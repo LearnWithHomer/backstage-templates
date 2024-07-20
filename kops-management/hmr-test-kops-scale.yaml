@@ -1,0 +1,35 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: hmr-test-kops-scale
+  title: Scale HMR Test Cluster Up or Down 
+  description: Optimize cost by scaling the cluster down when when needed.
+  annotations:
+    backstage.io/techdocs-ref: dir:.
+spec:
+  owner: group:devops
+  type: service
+
+  parameters:
+    - title: Trigger Details
+      required:
+        - action
+      properties:
+        action:
+          title: Action
+          type: string
+          description: Action to perform
+          enum:
+            - scale-down
+            - scale-up
+
+  steps:
+    - id: github-action
+      name: Trigger GitHub Action
+      action: github:actions:dispatch
+      input:
+        workflowId: hmrTestScaleKopsSchedule.yml
+        repoUrl: "github.com?repo=github-actions-and-crons&owner=LearnWithHomer"
+        branchOrTagName: "master"
+        workflowInputs:
+          action: '${{ parameters.action }}'
