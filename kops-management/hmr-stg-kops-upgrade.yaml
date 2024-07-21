@@ -1,0 +1,22 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: hmr-staging-kops-upgrade
+  title: Upgrade HMR Staging Cluster
+  description: Upgrade the kubernetes cluster.
+  annotations:
+    backstage.io/techdocs-ref: dir:.
+spec:
+  owner: group:devops
+  type: service
+
+  steps:
+    - id: github-action
+      name: Trigger GitHub Action
+      action: github:actions:dispatch
+      input:
+        workflowId: hmrTestUpgradeKopsCluster.yml
+        repoUrl: "github.com?repo=github-actions-and-crons&owner=LearnWithHomer"
+        branchOrTagName: "master"
+        workflowInputs:
+          action: '${{ parameters.action }}'
