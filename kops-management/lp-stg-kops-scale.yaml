@@ -28,7 +28,7 @@ spec:
       name: Trigger GitHub Action
       action: github:actions:dispatch
       input:
-        workflowId: lpSTGScaleKopsSchedule.yml
+        workflowId: littlepassports-staging-kops-k8s-scaling-schedule.yml
         repoUrl: "github.com?repo=github-actions-and-crons&owner=LearnWithHomer"
         branchOrTagName: "master"
         workflowInputs:

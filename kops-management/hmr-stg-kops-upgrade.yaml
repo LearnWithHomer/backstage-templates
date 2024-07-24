@@ -15,7 +15,7 @@ spec:
       name: Trigger GitHub Action
       action: github:actions:dispatch
       input:
-        workflowId: hmrSTGUpgradeKopsCluster.yml
+        workflowId: homer-staging-kops-k8s-upgrade.yml
         repoUrl: "github.com?repo=github-actions-and-crons&owner=LearnWithHomer"
         branchOrTagName: "master"
         workflowInputs:

@@ -1,0 +1,56 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: set-scheduled-workflow-status
+  title: Enable or Disable a Scheduled Workflow in GitHub Actions
+  description: This template Enables or Disables a Selected Scheduled Workflow in GitHub Actions by setting a value in Parameter Store
+  annotations:
+    backstage.io/techdocs-ref: dir:.
+spec:
+  owner: group:devops
+  type: service
+
+  parameters:
+    - title: Workflows Choice
+      required:
+        - workflow_name
+        - status
+      properties:
+        workflow_name:
+          title: Workflow Name
+          type: string
+          description: Select scheduled workflow you want to enable/disable
+          enum:
+            - begin-site-account-scheduled-scaling
+            - codeSpark-account-scheduled-scaling
+            - data-platform-dev-account-scheduled-scaling
+            - data-platform-prod-account-scheduled-scaling
+            - data-platform-staging-account-scheduled-scaling
+            - homer-production-account-scheduled-scaling
+            - infrastructure-account-scheduled-scaling
+            - littlepassports-production-account-scheduled-scaling
+            - littlepassports-staging-account-scheduled-scaling
+            - parent-ai-account-scheduled-scaling
+            - codeSpark-staging-kops-k8s-scaling-schedule
+            - homer-staging-kops-k8s-scaling-schedule
+            - homer-test-kops-k8s-scaling-schedule
+            - littlepassports-staging-kops-k8s-scaling-schedule
+        status:
+          title: Status
+          type: string
+          description: Status to set for the workflow
+          enum:
+            - enabled
+            - disabled
+
+  steps:
+    - id: github-action
+      name: Trigger GitHub Action
+      action: github:actions:dispatch
+      input:
+        workflowId: setWorkflowStatus.yml
+        repoUrl: "github.com?repo=github-actions-and-crons&owner=LearnWithHomer"
+        branchOrTagName: "main"
+        workflowInputs:
+          workflow_name: ${{ parameters.workflow_name }}
+          status: ${{ parameters.status }}
