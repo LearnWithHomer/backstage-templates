@@ -50,7 +50,7 @@ spec:
       input:
         workflowId: setWorkflowStatus.yml
         repoUrl: "github.com?repo=github-actions-and-crons&owner=LearnWithHomer"
-        branchOrTagName: "main"
+        branchOrTagName: "master"
         workflowInputs:
           workflow_name: ${{ parameters.workflow_name }}
           status: ${{ parameters.status }}
