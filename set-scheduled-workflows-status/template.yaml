@@ -35,6 +35,7 @@ spec:
             - homer-staging-kops-k8s-scaling-schedule
             - homer-test-kops-k8s-scaling-schedule
             - littlepassports-staging-kops-k8s-scaling-schedule
+            - LittlePassport EFS Restart 
         status:
           title: Status
           type: string

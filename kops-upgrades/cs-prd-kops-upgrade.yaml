@@ -1,0 +1,20 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: cs-prd-kops-upgrade
+  title: Upgrade CodeSpark Production Cluster
+  description: Upgrade the kubernetes cluster.
+  annotations:
+    backstage.io/techdocs-ref: dir:.
+spec:
+  owner: group:devops
+  type: service
+
+  steps:
+    - id: github-action
+      name: Trigger GitHub Action
+      action: github:actions:dispatch
+      input:
+        workflowId: codeSpark-prod-kops-k8s-upgrade.yml
+        repoUrl: "github.com?repo=github-actions-and-crons&owner=LearnWithHomer"
+        branchOrTagName: "master"

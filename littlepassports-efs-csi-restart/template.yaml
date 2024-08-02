@@ -1,9 +1,9 @@
 apiVersion: scaffolder.backstage.io/v1beta3
 kind: Template
 metadata:
-  name: cs-prd-kops-upgrade
-  title: Upgrade CodeSpark Production Cluster
-  description: Upgrade the kubernetes cluster.
+  name: littlepassports-efs-csi-restart
+  title: Restart Stuck EFS-CSI Pods in Littlepassports Cluster
+  description: This template Restarts Stuck EFS-CSI Pods in Littlepassports Cluster
   annotations:
     backstage.io/techdocs-ref: dir:.
 spec:
@@ -15,8 +15,6 @@ spec:
       name: Trigger GitHub Action
       action: github:actions:dispatch
       input:
-        workflowId: codeSpark-prod-kops-k8s-upgrade.yml
+        workflowId: littlepassports-efs-csi-restart.yml
         repoUrl: "github.com?repo=github-actions-and-crons&owner=LearnWithHomer"
         branchOrTagName: "master"
-        workflowInputs:
-          action: '${{ parameters.action }}'
