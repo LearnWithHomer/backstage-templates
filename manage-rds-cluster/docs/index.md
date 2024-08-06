@@ -1,25 +1,60 @@
-# How to Use a Backstage Template to Trigger a Pipeline
+# RDS Cluster Management for Cost Optimization in Non Production Environments
 
-1. Click on the `Create...` link in the side menu and click `CHOOSE` button on the template card you want to use.
+## Overview
 
-![Create](./images/bckstg1.png)
+This template allows you to start or stop AWS RDS clusters in connected AWS accounts using GitHub Actions. It's designed to provide an easy way to manage database resources, helping to optimize costs in non production environments.
 
-2. Fill the form as required by the template and click on `NEXT` to proceed.
+## Usage
 
-![Create](./images/bckstg2.png)
+### Manual Triggering
 
-3. Select the action to be performed by the pipeline and click on `REVIEW` to proceed.
+1. Navigate to this template in Backstage.
+2. Click on the "Create" button.
+3. Fill in the required parameters:
+   - **Cluster Identifier**: Choose the RDS cluster you want to manage (e.g., `cs-dev-docdb-dev`).
+   - **Action**: Select either `start` or `stop`.
+4. Click "Create" to trigger the GitHub Action.
 
-![Create](./images/bckstg3.png)
+### Scheduled Operations
 
-4. Review the options and click on `CREATE` to proceed.
+The workflow is also configured to run on a schedule:
+- Start: Monday to Friday at 8:00 AM EST
+- Stop: Monday to Friday at 8:00 PM EST
 
-![Create](./images/bckstg4.png)
+## Workflow Details
 
-5. The pipeline will be triggered and you can monitor the progress of the pipeline.
+### Main Workflow (`*-account-scheduled-scaling.yml`)
 
-![Create](./images/bckstg5.png)
+1. **Check Status**: Determines if the workflow should run based on scheduling.
+2. **RDS Management**: Calls the reusable workflow to perform the start/stop action.
+3. **Slack Notifications**: Sends notifications about the operation's success or failure.
 
-6. Once the pipeline is completed, your resources would have been provisioned as defined in Terraform.
+## Parameters
 
-![Create](./images/bckstg6.png)
+- `cluster`: The identifier of the RDS cluster to manage.
+- `action`: The action to perform (`start` or `stop`).
+
+## Notifications
+
+Slack notifications are sent to the aapropriate slack channel for:
+- Successful operations
+- Failed operations
+- Skipped executions (when the workflow is disabled)
+
+## Troubleshooting
+
+If you encounter issues:
+
+1. Check the GitHub Actions logs for detailed error messages.
+2. Ensure the specified RDS cluster exists and is in a valid state for the requested action.
+
+## Customization
+
+To modify the scheduled times or add new clusters:
+
+1. Update the `cron` expressions in the `*-account-scheduled-scaling.yml` file.
+2. Modify the `scheduled-clusters` input in the same file.
+
+## Support
+
+For assistance, please contact the DevOps team or create an issue in the `LearnWithHomer/github-actions-and-crons` repository.

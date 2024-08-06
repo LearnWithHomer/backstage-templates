@@ -1,25 +1,53 @@
-# How to Use a Backstage Template to Trigger a Pipeline
+# Littlepassports EFS-CSI Restart
 
-1. Click on the `Create...` link in the side menu and click `CHOOSE` button on the template card you want to use.
+## Overview
 
-![Create](./images/bckstg1.png)
+This template triggers a GitHub Actions workflow that automatically detects and restarts stuck EFS-CSI pods in the Littlepassports production Kubernetes cluster. It's designed to address issues where pods get stuck in the `ContainerCreating` state, which can impact the performance and stability of the Littlepassports application.
 
-2. Fill the form as required by the template and click on `NEXT` to proceed.
+## When to Use This Template
 
-![Create](./images/bckstg2.png)
+Use this template when:
 
-3. Select the action to be performed by the pipeline and click on `REVIEW` to proceed.
+1. You suspect that EFS-CSI pods are stuck in the `ContainerCreating` state.
+2. You want to proactively check and resolve potential EFS-CSI issues.
+3. You need to manually trigger the restart process outside of the scheduled runs.
 
-![Create](./images/bckstg3.png)
+## How It Works
 
-4. Review the options and click on `CREATE` to proceed.
+The template triggers a GitHub Actions workflow that performs the following steps:
 
-![Create](./images/bckstg4.png)
+1. Checks for pods in the `ContainerCreating` state that have been stuck for more than 150 seconds.
+2. If a stuck pod is found:
+   - Drains the node where the stuck pod is running.
+   - Deletes all `efs-csi-node` pods on that node.
+   - Uncordons the node.
+3. Sends a Slack notification about the action taken.
 
-5. The pipeline will be triggered and you can monitor the progress of the pipeline.
+## Usage
 
-![Create](./images/bckstg5.png)
+To use this template:
 
-6. Once the pipeline is completed, your resources would have been provisioned as defined in Terraform.
+1. Navigate to the template in Backstage.
+2. Click on the "Create" button.
+3. Review the information and click "Create" to trigger the workflow.
 
-![Create](./images/bckstg6.png)
+No additional input is required from the user.
+
+## Scheduled Runs
+
+The GitHub Actions workflow is scheduled to run automatically every 15 minutes. This ensures regular checks and prompt resolution of any stuck pods.
+
+## Manual Triggering
+
+While the workflow runs on a schedule, you can use this Backstage template to manually trigger the process at any time.
+
+## Notifications
+
+Slack notifications are sent to the `#littlepassports-production-status` channel for the following scenarios:
+
+- When the workflow successfully restarts stuck pods.
+- When the workflow is skipped (if it's disabled).
+
+## Support
+
+For any issues or questions, please contact the DevOps team or create an issue in the [infrastructure-public](https://github.com/LearnWithHomer/infrastructure-public) repository.

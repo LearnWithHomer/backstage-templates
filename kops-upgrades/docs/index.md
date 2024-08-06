@@ -1,25 +1,45 @@
-# How to Use a Backstage Template to Trigger a Pipeline
+# Kops Kubernetes Cluster Upgrade
 
-1. Click on the `Create...` link in the side menu and click `CHOOSE` button on the template card you want to use.
+## Overview
 
-![Create](./images/bckstg1.png)
+This template triggers a GitHub Actions workflow to upgrade the Kubernetes cluster. It utilizes a reusable workflow for Kops K8s Cluster Scheduled Upgrade, which checks for available upgrades and performs the upgrade if necessary.
 
-2. Fill the form as required by the template and click on `NEXT` to proceed.
+## Components
 
-![Create](./images/bckstg2.png)
+1. **Backstage Template**: `*-kops-upgrade`
+2. **GitHub Actions Workflow**: `*codeSpark-prod*-kops-k8s-upgrade.yml`
+3. **Reusable Workflow**: `k8s-kops-upgrade.yml`
 
-3. Select the action to be performed by the pipeline and click on `REVIEW` to proceed.
+## Workflow Details
 
-![Create](./images/bckstg3.png)
+1. Checks for available Kubernetes upgrades using Kops.
+2. If an upgrade is available, it performs the upgrade and initiates a rolling update.
+3. Outputs the upgrade status, old version, and new version (if upgraded).
 
-4. Review the options and click on `CREATE` to proceed.
+## Usage
 
-![Create](./images/bckstg4.png)
+To initiate a cluster upgrade:
 
-5. The pipeline will be triggered and you can monitor the progress of the pipeline.
+1. Navigate to the Backstage catalog.
+2. Find the template.
+3. Click "Create" to start the process.
+4. Review the information and confirm the action.
 
-![Create](./images/bckstg5.png)
+The template will trigger the GitHub Actions workflow, which will:
 
-6. Once the pipeline is completed, your resources would have been provisioned as defined in Terraform.
+1. Check for available upgrades.
+2. Perform the upgrade if a new version is available.
+3. Send a Slack notification with the result.
 
-![Create](./images/bckstg6.png)
+## Notifications
+
+- Successful upgrades are reported in the appropriate Slack channel for the environment being upgraded.
+- Failed upgrade attempts are also reported in the same channel.
+
+## Security
+
+The workflow uses GitHub's OIDC provider to authenticate with AWS, eliminating the need for long-lived credentials.
+
+## Troubleshooting
+
+If the upgrade fails contact the DevOps team for assistance.

@@ -3,7 +3,6 @@ site_name: Backstage Templates
 
 nav:
   - Template Usage: index.md
-  - Template Setup: 02-Setting-up-a-Backstage-Template.md
 
 plugins:
   - techdocs-core

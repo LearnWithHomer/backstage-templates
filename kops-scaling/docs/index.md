@@ -1,25 +1,61 @@
-# How to Use a Backstage Template to Trigger a Pipeline
+# Kops Kubernetes Cluster Scaling for Cost Optimization
 
-1. Click on the `Create...` link in the side menu and click `CHOOSE` button on the template card you want to use.
+## Overview
 
-![Create](./images/bckstg1.png)
+This template allows you to trigger the scaling up or down of the Kubernetes cluster managed by Kops. The purpose is to optimize costs by scaling down the cluster during off-hours and scaling it back up when needed.
 
-2. Fill the form as required by the template and click on `NEXT` to proceed.
+## Usage
 
-![Create](./images/bckstg2.png)
+1. Navigate to the template in Backstage.
+2. Click "Create" to start the workflow.
+3. Select the desired action:
+   - `scale-down`: Reduces the cluster size to minimize costs.
+   - `scale-up`: Increases the cluster size to normal operating capacity.
+4. Click "Create" to trigger the action.
 
-3. Select the action to be performed by the pipeline and click on `REVIEW` to proceed.
+## Technical Details
 
-![Create](./images/bckstg3.png)
+### Workflow
 
-4. Review the options and click on `CREATE` to proceed.
+The template triggers a GitHub Actions workflow named `*-kops-k8s-scaling-schedule.yml`. These workflows, in turn, call a reusable workflow that handles the actual scaling operations.
 
-![Create](./images/bckstg4.png)
+#### Main Workflow (`*-kops-k8s-scaling-schedule.yml`)
 
-5. The pipeline will be triggered and you can monitor the progress of the pipeline.
+- **Trigger**: 
+  - Scheduled runs:
+    - Scale up: Every weekday at 12:00 UTC (8:00 PM EDT)
+    - Scale down: Every weekday at 00:00 UTC (8:00 PM EDT)
+  - Manual trigger via GitHub Actions UI or this Backstage template
 
-![Create](./images/bckstg5.png)
+- **Jobs**:
+  1. `check-status`: Verifies if the workflow should run (enable or disable scheduled workflows using the `set-scheduled-workflows-status` template).
+  2. `optimize-cluster`: Calls the reusable workflow to perform the scaling action.
+  3. `slack-notify-success`: Sends a Slack notification upon successful completion.
+  4. `slack-notify-skipping`: Notifies if the workflow was skipped due to being disabled, as informed by `check-status`.
 
-6. Once the pipeline is completed, your resources would have been provisioned as defined in Terraform.
+#### Reusable Workflow (`k8s-kops-scaling.yml`)
 
-![Create](./images/bckstg6.png)
+This workflow performs the actual scaling operations:
+
+1. **Scale Down**:
+   - Stores the current instance group configuration in AWS Parameter Store.
+   - Modifies Node instance groups:
+     - Sets `minSize` to 0
+     - Sets `maxSize` to 1
+     - Changes `machineType` to t2.micro
+   - Applies changes and performs a rolling update.
+
+2. **Scale Up**:
+   - Retrieves the original configuration from AWS Parameter Store.
+   - Applies the original configuration.
+   - Performs a rolling update.
+   - Validates the cluster state (with a 10-minute timeout).
+
+## Troubleshooting
+
+If the workflow fails or the cluster doesn't reach the desired state contact the DevOps team or create a GitHub issue in the `LearnWithHomer/infrastructure-public` repository.
+
+## Notes
+
+- The scale-down process significantly reduces cluster capacity. Ensure that this action is not triggered during times of expected high traffic or important operations.
+- After scaling up, allow some time for the cluster to stabilize before running critical workloads.
